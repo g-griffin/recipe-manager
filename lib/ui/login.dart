@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_manager/constants/strings.dart';
-import 'package:recipe_manager/ui/home.dart';
+import 'package:recipe_manager/data/sharedpref/shared_preferences_helper.dart';
+import 'package:recipe_manager/di/service_locator.dart';
+import 'package:recipe_manager/stores/login_form_store.dart';
+import 'package:recipe_manager/utils/routes.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,6 +13,18 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  final _loginFormStore = LoginFormStore();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,22 +45,31 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
-                decoration: InputDecoration(
+                controller: _usernameController,
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: Strings.usernameFieldText,
                 ),
+                onChanged: (value) {
+                  _loginFormStore.setUsername(value);
+                },
               ),
             ),
-            const Padding(
-              padding:
-                  EdgeInsets.only(left: 15.0, right: 15.0, top: 15, bottom: 0),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: 15.0, right: 15.0, top: 15, bottom: 0),
               child: TextField(
+                controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(), labelText: Strings.passwordFieldText),
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: Strings.passwordFieldText),
+                onChanged: (value) {
+                  _loginFormStore.setPassword(value);
+                },
               ),
             ),
             TextButton(
@@ -66,9 +90,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               child: TextButton(
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const HomeScreen()));
-                  //TODO AUTHENTICATION
+                  if (_loginFormStore.canLogin) {
+                    serviceLocator<SharedPreferencesHelper>()
+                        .saveUsername(_usernameController.text);
+                    Navigator.pushReplacementNamed(context, Routes.home);
+                    //TODO AUTHENTICATION
+                  }
                 },
                 child: const Text(
                   Strings.loginButtonText,
