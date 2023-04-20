@@ -49,19 +49,24 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
     });
   }
 
-  late final _$_LoginFormStoreActionController =
-      ActionController(name: '_LoginFormStore', context: context);
+  late final _$setUsernameAsyncAction =
+      AsyncAction('_LoginFormStore.setUsername', context: context);
 
   @override
-  void setUsername(String value) {
-    final _$actionInfo = _$_LoginFormStoreActionController.startAction(
-        name: '_LoginFormStore.setUsername');
-    try {
-      return super.setUsername(value);
-    } finally {
-      _$_LoginFormStoreActionController.endAction(_$actionInfo);
-    }
+  Future<void> setUsername(String value) {
+    return _$setUsernameAsyncAction.run(() => super.setUsername(value));
   }
+
+  late final _$loginAsyncAction =
+      AsyncAction('_LoginFormStore.login', context: context);
+
+  @override
+  Future<void> login() {
+    return _$loginAsyncAction.run(() => super.login());
+  }
+
+  late final _$_LoginFormStoreActionController =
+      ActionController(name: '_LoginFormStore', context: context);
 
   @override
   void setPassword(String value) {
