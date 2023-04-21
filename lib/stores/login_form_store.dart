@@ -8,27 +8,27 @@ class LoginFormStore = _LoginFormStore with _$LoginFormStore;
 
 abstract class _LoginFormStore with Store {
   @observable
-  String username = "";
+  String _username = "";
 
   @observable
-  String password = "";
+  String _password = "";
 
   @action
-  Future<void> setUsername(String value) async {
-    username = value;
+  void setUsername(String value) {
+    _username = value;
   }
 
   @action
   void setPassword(String value) {
-    password = value;
+    _password = value;
   }
 
   @computed
-  bool get canLogin => username.isNotEmpty && password.isNotEmpty;
+  bool get canLogin => _username.isNotEmpty && _password.isNotEmpty;
 
   @action
-  Future<void> login() async {
-    serviceLocator.get<SharedPreferencesHelper>().saveUsername(username);
+  Future login() async {
+    serviceLocator.get<SharedPreferencesHelper>().saveUsername(_username);
     serviceLocator.get<SharedPreferencesHelper>().saveIsLoggedIn(true);
   }
 }
