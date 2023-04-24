@@ -4,7 +4,6 @@ import 'package:recipe_manager/data/sharedpref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
 import 'package:recipe_manager/ui/login.dart';
 import 'package:recipe_manager/utils/nav_bar_handler.dart';
-import 'package:recipe_manager/utils/routes.dart';
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
@@ -14,7 +13,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: Strings.appName,
       theme: ThemeData(primarySwatch: Colors.blue),
-      routes: Routes.routes,
       home: serviceLocator<SharedPreferencesHelper>().isLoggedIn
           ? const NavBarHandler()
           : const LoginScreen(),
