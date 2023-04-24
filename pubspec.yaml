@@ -48,6 +48,9 @@ dependencies:
   # Dependency injection
   get_it: ^7.2.0
 
+  # Pre-built animations
+  animations: ^2.0.7
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

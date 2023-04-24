@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_manager/constants/strings.dart';
-import 'package:recipe_manager/data/sharedpref/shared_preferences_helper.dart';
-import 'package:recipe_manager/di/service_locator.dart';
 import 'package:recipe_manager/stores/login_form_store.dart';
-import 'package:recipe_manager/utils/routes.dart';
+import 'package:recipe_manager/utils/nav_bar_handler.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -91,9 +89,9 @@ class _LoginScreenState extends State<LoginScreen> {
               child: TextButton(
                 onPressed: () {
                   if (_loginFormStore.canLogin) {
-                    serviceLocator<SharedPreferencesHelper>()
-                        .saveUsername(_usernameController.text);
-                    Navigator.pushReplacementNamed(context, Routes.home);
+                    _loginFormStore.login();
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => const NavBarHandler()));
                     //TODO AUTHENTICATION
                   }
                 },

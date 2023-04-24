@@ -13,7 +13,15 @@ class SharedPreferencesHelper {
     return _sharedPreferences.getString(Preferences.username);
   }
 
-  Future<bool> saveUsername(String value) {
+  Future<bool> saveUsername(String value) async {
     return _sharedPreferences.setString(Preferences.username, value);
+  }
+
+  Future<bool> saveIsLoggedIn(bool value) async {
+    return _sharedPreferences.setBool(Preferences.isLoggedIn, value);
+  }
+
+  bool get isLoggedIn {
+    return _sharedPreferences.getBool(Preferences.isLoggedIn) ?? false;
   }
 }

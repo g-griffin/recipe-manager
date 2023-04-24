@@ -1,27 +1,34 @@
 import 'package:mobx/mobx.dart';
+import 'package:recipe_manager/data/sharedpref/shared_preferences_helper.dart';
+import 'package:recipe_manager/di/service_locator.dart';
 
 part 'login_form_store.g.dart';
 
 class LoginFormStore = _LoginFormStore with _$LoginFormStore;
 
 abstract class _LoginFormStore with Store {
+  @observable
+  String _username = "";
 
   @observable
-  String username = "";
-
-  @observable
-  String password = "";
+  String _password = "";
 
   @action
   void setUsername(String value) {
-    username = value;
+    _username = value;
   }
 
   @action
   void setPassword(String value) {
-    password = value;
+    _password = value;
   }
 
   @computed
-  bool get canLogin => username.isNotEmpty && password.isNotEmpty;
+  bool get canLogin => _username.isNotEmpty && _password.isNotEmpty;
+
+  @action
+  Future login() async {
+    serviceLocator.get<SharedPreferencesHelper>().saveUsername(_username);
+    serviceLocator.get<SharedPreferencesHelper>().saveIsLoggedIn(true);
+  }
 }

@@ -17,36 +17,44 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
               name: '_LoginFormStore.canLogin'))
           .value;
 
-  late final _$usernameAtom =
-      Atom(name: '_LoginFormStore.username', context: context);
+  late final _$_usernameAtom =
+      Atom(name: '_LoginFormStore._username', context: context);
 
   @override
-  String get username {
-    _$usernameAtom.reportRead();
-    return super.username;
+  String get _username {
+    _$_usernameAtom.reportRead();
+    return super._username;
   }
 
   @override
-  set username(String value) {
-    _$usernameAtom.reportWrite(value, super.username, () {
-      super.username = value;
+  set _username(String value) {
+    _$_usernameAtom.reportWrite(value, super._username, () {
+      super._username = value;
     });
   }
 
-  late final _$passwordAtom =
-      Atom(name: '_LoginFormStore.password', context: context);
+  late final _$_passwordAtom =
+      Atom(name: '_LoginFormStore._password', context: context);
 
   @override
-  String get password {
-    _$passwordAtom.reportRead();
-    return super.password;
+  String get _password {
+    _$_passwordAtom.reportRead();
+    return super._password;
   }
 
   @override
-  set password(String value) {
-    _$passwordAtom.reportWrite(value, super.password, () {
-      super.password = value;
+  set _password(String value) {
+    _$_passwordAtom.reportWrite(value, super._password, () {
+      super._password = value;
     });
+  }
+
+  late final _$loginAsyncAction =
+      AsyncAction('_LoginFormStore.login', context: context);
+
+  @override
+  Future<dynamic> login() {
+    return _$loginAsyncAction.run(() => super.login());
   }
 
   late final _$_LoginFormStoreActionController =
@@ -77,8 +85,6 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
   @override
   String toString() {
     return '''
-username: ${username},
-password: ${password},
 canLogin: ${canLogin}
     ''';
   }
