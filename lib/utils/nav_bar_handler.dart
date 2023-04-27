@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:recipe_manager/ui/home.dart';
-import 'package:recipe_manager/ui/scan.dart';
+import 'package:recipe_manager/ui/scan/scan.dart';
 import 'package:recipe_manager/ui/search.dart';
 
 class NavBarHandler extends StatefulWidget {
@@ -24,7 +24,7 @@ class _NavBarHandlerState extends State<NavBarHandler> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageTransitionSwitcher(
-        duration: Duration(seconds: 1),
+        duration: const Duration(seconds: 1),
         transitionBuilder: (Widget child, Animation<double> animation,
                 Animation<double> secondaryAnimation) =>
             FadeThroughTransition(
@@ -34,8 +34,8 @@ class _NavBarHandlerState extends State<NavBarHandler> {
         ),
         child: IndexedStack(
             index: _selectedIndex,
-            children: _screens,
-            key: ValueKey<int>(_selectedIndex)),
+            key: ValueKey<int>(_selectedIndex),
+            children: _screens),
       ),
       bottomNavigationBar: _bottomNavigation(),
     );
