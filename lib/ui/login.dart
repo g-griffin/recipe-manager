@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             TextButton(
               onPressed: () {
-                //TODO FORGOT PASSWORD SCREEN GOES HERE
+                //TODO forgot password screen
               },
               child: const Text(
                 Strings.forgotPasswordButtonText,
@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     _loginFormStore.login();
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (context) => const NavBarHandler()));
-                    //TODO AUTHENTICATION
+                    //TODO authentication
                   }
                 },
                 child: const Text(
@@ -104,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 130),
             TextButton(
               onPressed: () {
-                //TODO CREATE ACCOUNT PAGE
+                //TODO create account screen
               },
               child: const Text(
                 style: TextStyle(color: Colors.grey),

@@ -30,11 +30,12 @@ class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
             if (_isPermissionGranted) {
               navigator.push(MaterialPageRoute(
                   builder: (context) => const CameraScreen()));
-            }
+            } //TODO reaction to disabled camera permission
           } else {
             navigator.push(
                 MaterialPageRoute(builder: (context) => const CameraScreen()));
           }
+          //TODO image scanner w/ reaction to disabled files permission
         },
         child: Stack(
           children: <Widget>[

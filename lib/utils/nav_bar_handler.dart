@@ -34,7 +34,6 @@ class _NavBarHandlerState extends State<NavBarHandler> {
         ),
         child: IndexedStack(
             index: _selectedIndex,
-            key: ValueKey<int>(_selectedIndex),
             children: _screens),
       ),
       bottomNavigationBar: _bottomNavigation(),
