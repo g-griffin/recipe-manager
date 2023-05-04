@@ -56,9 +56,10 @@ dependencies:
   google_mlkit_text_recognition: ^0.6.0
   permission_handler: ^10.2.0
 
-  # Network
+  # Network & data
   dio: ^5.1.1
-
+  json_serializable: ^6.6.1
+  json_annotation: ^4.8.0
 
 dev_dependencies:
   flutter_test:
