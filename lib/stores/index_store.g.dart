@@ -9,19 +9,19 @@ part of 'index_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$IndexStore on _IndexStore, Store {
-  late final _$indicesAtom =
-      Atom(name: '_IndexStore.indices', context: context);
+  late final _$_indicesAtom =
+      Atom(name: '_IndexStore._indices', context: context);
 
   @override
-  List<Index> get indices {
-    _$indicesAtom.reportRead();
-    return super.indices;
+  List<Index> get _indices {
+    _$_indicesAtom.reportRead();
+    return super._indices;
   }
 
   @override
-  set indices(List<Index> value) {
-    _$indicesAtom.reportWrite(value, super.indices, () {
-      super.indices = value;
+  set _indices(List<Index> value) {
+    _$_indicesAtom.reportWrite(value, super._indices, () {
+      super._indices = value;
     });
   }
 
@@ -36,7 +36,7 @@ mixin _$IndexStore on _IndexStore, Store {
   @override
   String toString() {
     return '''
-indices: ${indices}
+
     ''';
   }
 }

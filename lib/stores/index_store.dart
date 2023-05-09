@@ -9,11 +9,13 @@ class IndexStore = _IndexStore with _$IndexStore;
 
 abstract class _IndexStore with Store {
   @observable
-  List<Index> indices = ObservableList<Index>();
+  List<Index> _indices = ObservableList<Index>();
+
+  List<Index> get indices => _indices;
 
   @action
   Future<void> loadIndices() async {
     List<Index> response = await serviceLocator<DioClient>().getIndices();
-    indices = ObservableList.of(response);
+    _indices = ObservableList.of(response);
   }
 }
