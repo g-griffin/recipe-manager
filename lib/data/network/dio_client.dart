@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:recipe_manager/data/network/constants/endpoints.dart';
+import 'package:recipe_manager/di/service_locator.dart';
 import 'package:recipe_manager/models/index.dart';
+import 'package:recipe_manager/stores/index_store.dart';
 
 class DioClient {
   final Dio _dio;
@@ -32,6 +34,7 @@ class DioClient {
     } catch (e) {
       print('Error creating index: $e');
     }
+    await serviceLocator<IndexStore>().loadIndices(); // Update IndexStore
     return retrievedIndex;
   }
 }

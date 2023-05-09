@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:recipe_manager/data/network/dio_client.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:recipe_manager/data/sharedpref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
-import 'package:recipe_manager/models/index.dart';
+import 'package:recipe_manager/stores/index_store.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,36 +12,56 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _indexStore = serviceLocator<IndexStore>();
+
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    await _indexStore.loadIndices();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-              "Hello ${serviceLocator<SharedPreferencesHelper>().username}"),
+      appBar: AppBar(
+        title:
+            Text("Hello ${serviceLocator<SharedPreferencesHelper>().username}"),
+      ),
+      body: _buildIndexList(),
+    );
+  }
+
+  Widget _buildIndexList() {
+    if (_indexStore.indices.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 50.0),
+        child: Center(
+          child: Text(
+            'No recipes were found.\n\nTap \'Scan\' to add some now.',
+            textAlign: TextAlign.center,
+          ),
         ),
-        body: FutureBuilder<List<Index>>(
-          future: serviceLocator<DioClient>().getIndices(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.5),
-                    child: Card(
-                      elevation: 10,
-                      child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Text(snapshot.data![index].indexText)),
-                    ),
-                  );
-                },
-              );
-            } else {
-              return const LinearProgressIndicator();
-            }
+      );
+    } else {
+      return Observer(
+        builder: (_) => ListView.builder(
+          scrollDirection: Axis.vertical,
+          itemCount: _indexStore.indices.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.5),
+              child: Card(
+                elevation: 10,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(_indexStore.indices[index].indexText),
+                ),
+              ),
+            );
           },
-        ));
+        ),
+      );
+    }
   }
 }

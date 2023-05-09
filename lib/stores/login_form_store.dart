@@ -27,8 +27,8 @@ abstract class _LoginFormStore with Store {
   bool get canLogin => _username.isNotEmpty && _password.isNotEmpty;
 
   @action
-  Future login() async {
-    serviceLocator.get<SharedPreferencesHelper>().saveUsername(_username);
-    serviceLocator.get<SharedPreferencesHelper>().saveIsLoggedIn(true);
+  Future<void> login() async {
+    serviceLocator<SharedPreferencesHelper>().saveUsername(_username);
+    serviceLocator<SharedPreferencesHelper>().saveIsLoggedIn(true);
   }
 }
