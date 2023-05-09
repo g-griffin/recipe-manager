@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recipe_manager/constants/strings.dart';
+import 'package:recipe_manager/di/service_locator.dart';
 import 'package:recipe_manager/stores/login_form_store.dart';
 import 'package:recipe_manager/utils/nav_bar_handler.dart';
 
@@ -14,7 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  final _loginFormStore = LoginFormStore();
+  final _loginFormStore = serviceLocator<LoginFormStore>();
 
   @override
   void dispose() {

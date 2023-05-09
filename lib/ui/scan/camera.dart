@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:recipe_manager/data/network/dio_client.dart';
+import 'package:recipe_manager/di/service_locator.dart';
+import 'package:recipe_manager/models/index.dart';
 import 'package:recipe_manager/ui/scan/result.dart';
 import 'package:recipe_manager/utils/errors.dart';
 
@@ -150,6 +153,8 @@ class _CameraScreenState extends State<CameraScreen>
       final file = File(pictureFile.path);
       final inputImage = InputImage.fromFile(file);
       final recognizedText = await _textRecognizer.processImage(inputImage);
+      await serviceLocator<DioClient>()
+          .saveIndex(Index(indexText: recognizedText.text));
       await navigator.push(
         MaterialPageRoute(
           builder: (context) => ResultScreen(text: recognizedText.text),

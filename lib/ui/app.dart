@@ -6,7 +6,7 @@ import 'package:recipe_manager/ui/login.dart';
 import 'package:recipe_manager/utils/nav_bar_handler.dart';
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {

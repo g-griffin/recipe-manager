@@ -53,7 +53,7 @@ mixin _$LoginFormStore on _LoginFormStore, Store {
       AsyncAction('_LoginFormStore.login', context: context);
 
   @override
-  Future<dynamic> login() {
+  Future<void> login() {
     return _$loginAsyncAction.run(() => super.login());
   }
 
