@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:recipe_manager/data/sharedpref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
-import 'package:recipe_manager/stores/index_store.dart';
+import 'package:recipe_manager/stores/recipe_index_store.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,12 +12,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _indexStore = serviceLocator<IndexStore>();
+  final _indexStore = serviceLocator<RecipeIndexStore>();
 
   @override
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
-    await _indexStore.loadIndices();
+    await _indexStore.loadRecipeIndices();
   }
 
   @override
@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildIndexList() {
-    if (_indexStore.indices.isEmpty) {
+    if (_indexStore.recipeIndices.isEmpty) {
       return const Padding(
         padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 50.0),
         child: Center(
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return Observer(
         builder: (_) => ListView.builder(
           scrollDirection: Axis.vertical,
-          itemCount: _indexStore.indices.length,
+          itemCount: _indexStore.recipeIndices.length,
           itemBuilder: (context, index) {
             return Padding(
               padding:
@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 elevation: 10,
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
-                  child: Text(_indexStore.indices[index].indexText),
+                  child: Text(_indexStore.recipeIndices[index].recipeIndexText),
                 ),
               ),
             );

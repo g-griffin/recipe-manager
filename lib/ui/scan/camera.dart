@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:recipe_manager/data/network/dio_client.dart';
 import 'package:recipe_manager/di/service_locator.dart';
-import 'package:recipe_manager/models/index.dart';
+import 'package:recipe_manager/models/recipe_index.dart';
 import 'package:recipe_manager/ui/scan/result.dart';
 import 'package:recipe_manager/utils/errors.dart';
 
@@ -154,7 +154,7 @@ class _CameraScreenState extends State<CameraScreen>
       final inputImage = InputImage.fromFile(file);
       final recognizedText = await _textRecognizer.processImage(inputImage);
       await serviceLocator<DioClient>()
-          .saveIndex(Index(indexText: recognizedText.text));
+          .saveRecipeIndex(RecipeIndex(recipeIndexText: recognizedText.text));
       await navigator.push(
         MaterialPageRoute(
           builder: (context) => ResultScreen(text: recognizedText.text),
@@ -162,6 +162,7 @@ class _CameraScreenState extends State<CameraScreen>
       );
     } catch (e) {
       showInSnackBar(context, 'An error occurred when scanning text');
+      print(e);
     }
   }
 }

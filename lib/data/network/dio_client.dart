@@ -1,40 +1,40 @@
 import 'package:dio/dio.dart';
 import 'package:recipe_manager/data/network/constants/endpoints.dart';
 import 'package:recipe_manager/di/service_locator.dart';
-import 'package:recipe_manager/models/index.dart';
-import 'package:recipe_manager/stores/index_store.dart';
+import 'package:recipe_manager/models/recipe_index.dart';
+import 'package:recipe_manager/stores/recipe_index_store.dart';
 
 class DioClient {
   final Dio _dio;
 
   DioClient(this._dio);
 
-  Future<List<Index>> getIndices() async {
-    List<Index> indices = [];
+  Future<List<RecipeIndex>> getRecipeIndices() async {
+    List<RecipeIndex> recipeIndices = [];
     try {
-      Response indexData = await _dio.get('${Endpoints.baseUrl}/indices');
+      Response indexData = await _dio.get('${Endpoints.baseUrl}/recipeIndices');
 
       for (var index in indexData.data) {
-        indices.add(Index.fromJson(index));
+        recipeIndices.add(RecipeIndex.fromJson(index));
       }
     } on DioError catch (e) {
       print(e);
     }
 
-    return indices;
+    return recipeIndices;
   }
 
-  Future<Index?> saveIndex(Index index) async {
-    Index? retrievedIndex;
+  Future<RecipeIndex?> saveRecipeIndex(RecipeIndex index) async {
+    RecipeIndex? retrievedRecipeIndex;
     try {
       Response response = await _dio.post(
-          '${Endpoints.baseUrl}/indices', data: index.toJson());
-      print('Index created: ${response.data.toString()}');
-      retrievedIndex = Index.fromJson(response.data);
+          '${Endpoints.baseUrl}/recipeIndices', data: index.toJson());
+      print('RecipeIndex created: ${response.data.toString()}');
+      retrievedRecipeIndex = RecipeIndex.fromJson(response.data);
     } catch (e) {
-      print('Error creating index: $e');
+      print('Error creating RecipeIndex: $e');
     }
-    await serviceLocator<IndexStore>().loadIndices(); // Update IndexStore
-    return retrievedIndex;
+    await serviceLocator<RecipeIndexStore>().loadRecipeIndices(); // Update IndexStore
+    return retrievedRecipeIndex;
   }
 }
