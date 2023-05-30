@@ -7,7 +7,17 @@ class SharedPreferencesHelper {
 
   SharedPreferencesHelper(this._sharedPreferences);
 
-  // Theme:------------------------------------------------------
+  Future<String?> get authToken async {
+    return _sharedPreferences.getString(Preferences.authToken);
+  }
+
+  Future<bool> saveAuthToken(String authToken) async {
+    return _sharedPreferences.setString(Preferences.authToken, authToken);
+  }
+
+  Future<bool> removeAuthToken() async {
+    return _sharedPreferences.remove(Preferences.authToken);
+  }
 
   String? get username {
     return _sharedPreferences.getString(Preferences.username);

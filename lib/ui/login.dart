@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:recipe_manager/constants/strings.dart';
+import 'package:recipe_manager/data/network/constants/endpoints.dart';
+import 'package:recipe_manager/data/sharedpref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
-import 'package:recipe_manager/stores/login_form_store.dart';
 import 'package:recipe_manager/utils/nav_bar_handler.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -12,17 +14,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  final _loginFormStore = serviceLocator<LoginFormStore>();
-
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+  FlutterAppAuth appAuth = FlutterAppAuth();
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            const SizedBox(height: 100),
             Padding(
               padding: const EdgeInsets.only(top: 60.0),
               child: Center(
@@ -44,42 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              child: TextField(
-                controller: _usernameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: Strings.usernameFieldText,
-                ),
-                onChanged: (value) {
-                  _loginFormStore.setUsername(value);
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 15.0, right: 15.0, top: 15, bottom: 0),
-              child: TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: Strings.passwordFieldText),
-                onChanged: (value) {
-                  _loginFormStore.setPassword(value);
-                },
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                //TODO forgot password screen
-              },
-              child: const Text(
-                Strings.forgotPasswordButtonText,
-                style: TextStyle(color: Colors.blue, fontSize: 15),
-              ),
-            ),
+            const SizedBox(height: 30),
             Container(
               height: 50,
               width: 250,
@@ -89,12 +47,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               child: TextButton(
                 onPressed: () {
-                  if (_loginFormStore.canLogin) {
-                    _loginFormStore.login();
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const NavBarHandler()));
-                    //TODO authentication
-                  }
+                  _loginAction();
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => const NavBarHandler()));
                 },
                 child: const Text(
                   Strings.loginButtonText,
@@ -102,10 +57,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 130),
+            const SizedBox(height: 50),
             TextButton(
               onPressed: () {
-                //TODO create account screen
+                //TODO user registration
               },
               child: const Text(
                 style: TextStyle(color: Colors.grey),
@@ -116,5 +71,24 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _loginAction() async {
+    try {
+      final AuthorizationTokenResponse? result =
+          await appAuth.authorizeAndExchangeCode(
+        AuthorizationTokenRequest(
+          Endpoints.keycloakClientId,
+          Endpoints.redirectUrl,
+          discoveryUrl: Endpoints.discoveryUrl,
+          allowInsecureConnections: true,
+        ),
+      );
+      await serviceLocator<SharedPreferencesHelper>()
+          .saveAuthToken(result!.accessToken.toString());
+      await serviceLocator<SharedPreferencesHelper>().saveIsLoggedIn(true);
+    } catch (e) {
+      print(e);
+    }
   }
 }

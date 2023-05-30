@@ -60,6 +60,7 @@ dependencies:
   dio: ^5.1.1
   json_serializable: ^6.6.1
   json_annotation: ^4.8.0
+  flutter_appauth: ^6.0.0
 
 dev_dependencies:
   flutter_test:

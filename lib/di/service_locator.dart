@@ -19,7 +19,8 @@ Future<void> setupServiceLocator() async {
   serviceLocator.registerSingleton<SharedPreferencesHelper>(
       SharedPreferencesHelper(
           await serviceLocator.getAsync<SharedPreferences>()));
-  serviceLocator.registerSingleton<Dio>(NetworkModule.provideDio());
+  serviceLocator.registerSingleton<Dio>(
+      NetworkModule.provideDio(serviceLocator<SharedPreferencesHelper>()));
   serviceLocator.registerSingleton<DioClient>(DioClient(serviceLocator<Dio>()));
   serviceLocator.registerSingleton<RecipeIndexStore>(RecipeIndexStore());
 
