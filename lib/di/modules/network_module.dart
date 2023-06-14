@@ -20,18 +20,21 @@ abstract class NetworkModule {
         requestHeader: true,
       ))
       ..interceptors.add(
-        InterceptorsWrapper(
+        QueuedInterceptorsWrapper(
           onRequest: (RequestOptions options,
-              RequestInterceptorHandler handler) async {
+              RequestInterceptorHandler requestHandler) async {
             var token = await sharedPreferencesHelper.authToken;
             if (token != null) {
               options.headers
                   .putIfAbsent('Authorization', () => 'Bearer $token');
-            } else {
-              print('Auth token is null');
             }
-            return handler.next(options);
+            return requestHandler.next(options);
           },
+          onError: (DioError error, ErrorInterceptorHandler errorHandler) async {
+            print('--------------ERROR ENCOUNTERED-----------------');
+            print(error);
+            return errorHandler.next(error);
+          }
         ),
       );
     return dio;

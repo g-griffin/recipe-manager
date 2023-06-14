@@ -13,6 +13,7 @@ class Strings {
   static const String passwordFieldText = "Password";
   static const String forgotPasswordButtonText = "Forgot Password";
   static const String loginButtonText = "Login";
+  static const String logoutButtonText = "Logout";
   static const String createAccountButtonText = "New User? Create Account";
 
 }
