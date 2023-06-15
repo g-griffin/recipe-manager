@@ -1,4 +1,5 @@
 import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobx/mobx.dart';
 import 'package:recipe_manager/data/network/constants/endpoints.dart';
 import 'package:recipe_manager/data/secure_storage/secure_storage.dart';
@@ -15,6 +16,9 @@ abstract class _SessionStore with Store {
   final SecureStorageManager _secureStorage;
 
   _SessionStore(this._appAuth, this._secureStorage);
+
+  @action
+  SecureStorageManager get secureStorage => _secureStorage;
 
   Future<void> login() async {
     try {
@@ -39,10 +43,12 @@ abstract class _SessionStore with Store {
     }
   }
 
-  Future<void> _saveTokens(AuthorizationTokenResponse response) async {
+  Future<void> _saveTokens(var response) async {
     await _secureStorage.setString(
         SecureStorage.authToken, response.accessToken);
     await _secureStorage.setString(SecureStorage.idToken, response.idToken);
+    await _secureStorage.setString(
+        SecureStorage.refreshToken, response.refreshToken);
   }
 
   Future<void> logout() async {
@@ -62,5 +68,33 @@ abstract class _SessionStore with Store {
     }
     await _secureStorage.removeAll();
     await serviceLocator<SharedPreferencesHelper>().setIsLoggedIn(false);
+  }
+
+  Future<String?> refresh() async {
+    var refreshToken =
+        await _secureStorage.getString(SecureStorage.refreshToken);
+    try {
+      final TokenResponse? response = await _appAuth.token(
+        TokenRequest(
+          Endpoints.keycloakClientId,
+          Endpoints.redirectUrl,
+          discoveryUrl: Endpoints.discoveryUrl,
+          refreshToken: refreshToken,
+          allowInsecureConnections: true,
+        ),
+      );
+      if (response != null) {
+        await _saveTokens(response);
+        return response.accessToken;
+      }
+    } catch (e) {
+      print('FAILED TO REFRESH TOKENS: $e');
+      // TODO: handle expired refresh token
+    }
+    return null;
+  }
+
+  bool tokenHasExpired(String? token) {
+    return token != null ? JwtDecoder.isExpired(token) : true;
   }
 }

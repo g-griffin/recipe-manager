@@ -1,13 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:recipe_manager/data/network/constants/endpoints.dart';
 import 'package:recipe_manager/data/secure_storage/secure_storage.dart';
-import 'package:recipe_manager/data/secure_storage/secure_storage_manager.dart';
+import 'package:recipe_manager/stores/session_store.dart';
 
 abstract class NetworkModule {
-  /// A singleton preference provider.
-  ///
-  /// Calling it multiple times will return the same instance.
-  static Dio provideDio(SecureStorageManager secureStorage) {
+  static Dio provideDio(SessionStore session) {
     final dio = Dio();
 
     dio
@@ -20,24 +17,36 @@ abstract class NetworkModule {
         requestBody: true,
         requestHeader: true,
       ))
-      ..interceptors.add(
-        QueuedInterceptorsWrapper(
-          onRequest: (RequestOptions options,
-              RequestInterceptorHandler requestHandler) async {
-            var token = await secureStorage.getString(SecureStorage.authToken);
-            if (token != null) {
-              options.headers
-                  .putIfAbsent('Authorization', () => 'Bearer $token');
-            }
-            return requestHandler.next(options);
-          },
-          onError: (DioError error, ErrorInterceptorHandler errorHandler) async {
-            print('--------------ERROR ENCOUNTERED-----------------');
-            print(error);
-            return errorHandler.next(error);
-          }
-        ),
-      );
+      ..interceptors.addAll({DioInterceptors(session, dio)});
     return dio;
+  }
+}
+
+class DioInterceptors extends QueuedInterceptorsWrapper {
+  final SessionStore _session;
+  final Dio _dio;
+
+  DioInterceptors(this._session, this._dio);
+
+  @override
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
+    var token = await _session.secureStorage.getString(SecureStorage.authToken);
+    if (!_session.tokenHasExpired(token)) {
+      options.headers.putIfAbsent('Authorization', () => 'Bearer $token');
+    }
+    return handler.next(options);
+  }
+
+  @override
+  Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
+    if (err.response?.statusCode == 401) {
+      var newToken = await _session.refresh();
+      if (!_session.tokenHasExpired(newToken)) {
+        err.requestOptions.headers['Authorization'] = 'Bearer $newToken';
+        return handler.resolve(await _dio.fetch(err.requestOptions));
+      }
+    }
+    return handler.next(err);
   }
 }

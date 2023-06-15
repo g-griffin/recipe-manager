@@ -35,6 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           const SizedBox(height: 50),
           _buildLogoutButton(),
+          const SizedBox(height: 50),
+          _buildReloadButton(),
           Flexible(fit: FlexFit.loose, child: _buildIndexList()),
         ],
       ),
@@ -53,6 +55,24 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: const Text(
           Strings.logoutButtonText,
+          style: TextStyle(color: Colors.white, fontSize: 25),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReloadButton() {
+    return Container(
+      height: 50,
+      width: 250,
+      decoration: BoxDecoration(
+          color: Colors.blue, borderRadius: BorderRadius.circular(20)),
+      child: TextButton(
+        onPressed: () {
+          serviceLocator<RecipeIndexStore>().loadRecipeIndices();
+        },
+        child: const Text(
+          'Reload Recipes',
           style: TextStyle(color: Colors.white, fontSize: 25),
         ),
       ),

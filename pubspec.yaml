@@ -62,6 +62,7 @@ dependencies:
   json_serializable: ^6.6.1
   json_annotation: ^4.8.0
   flutter_appauth: ^6.0.0
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:
