@@ -15,7 +15,7 @@ class SharedPreferencesHelper {
     return _sharedPreferences.setString(Preferences.username, value);
   }
 
-  Future<bool> saveIsLoggedIn(bool value) async {
+  Future<bool> setIsLoggedIn(bool value) async {
     return _sharedPreferences.setBool(Preferences.isLoggedIn, value);
   }
 

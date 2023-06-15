@@ -1,5 +1,5 @@
 import 'package:mobx/mobx.dart';
-import 'package:recipe_manager/data/sharedpref/shared_preferences_helper.dart';
+import 'package:recipe_manager/data/shared_pref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
 
 part 'login_form_store.g.dart';
@@ -29,6 +29,6 @@ abstract class _LoginFormStore with Store {
   @action
   Future<void> login() async {
     serviceLocator<SharedPreferencesHelper>().saveUsername(_username);
-    serviceLocator<SharedPreferencesHelper>().saveIsLoggedIn(true);
+    serviceLocator<SharedPreferencesHelper>().setIsLoggedIn(true);
   }
 }

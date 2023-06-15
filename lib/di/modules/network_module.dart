@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:recipe_manager/data/network/constants/endpoints.dart';
-import 'package:recipe_manager/data/secure_storage.dart';
-import 'package:recipe_manager/data/secure_storage_manager.dart';
+import 'package:recipe_manager/data/secure_storage/secure_storage.dart';
+import 'package:recipe_manager/data/secure_storage/secure_storage_manager.dart';
 
 abstract class NetworkModule {
   /// A singleton preference provider.

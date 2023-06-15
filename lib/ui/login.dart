@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:recipe_manager/constants/strings.dart';
-import 'package:recipe_manager/data/secure_storage.dart';
-import 'package:recipe_manager/data/secure_storage_manager.dart';
-import 'package:recipe_manager/data/network/constants/endpoints.dart';
-import 'package:recipe_manager/data/sharedpref/shared_preferences_helper.dart';
+import 'package:recipe_manager/data/shared_pref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
 import 'package:recipe_manager/stores/recipe_index_store.dart';
+import 'package:recipe_manager/stores/session_store.dart';
 import 'package:recipe_manager/utils/nav_bar_handler.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,7 +14,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final appAuth = const FlutterAppAuth();
+  final SessionStore _session = serviceLocator<SessionStore>();
 
   @override
   Widget build(BuildContext context) {
@@ -75,35 +72,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _loginAction() async {
-    try {
-      final AuthorizationTokenResponse? result =
-          await appAuth.authorizeAndExchangeCode(
-        AuthorizationTokenRequest(
-          Endpoints.keycloakClientId,
-          Endpoints.redirectUrl,
-          discoveryUrl: Endpoints.discoveryUrl,
-          scopes: ['email', 'profile', 'openid'], // Add scope=openid to get idToken from Keycloak
-          allowInsecureConnections: true,
-        ),
-      );
-      var authToken = result?.accessToken;
-      var idToken = result?.idToken;
-      if (result != null) {
-        await serviceLocator<SecureStorageManager>().setString(SecureStorage.authToken, authToken!);
-        await serviceLocator<SecureStorageManager>().setString(SecureStorage.idToken, idToken!);
-
-        await serviceLocator<SharedPreferencesHelper>().saveIsLoggedIn(true);
-
-        if (serviceLocator<SharedPreferencesHelper>().isLoggedIn) {
-          await serviceLocator<RecipeIndexStore>().loadRecipeIndices();
-          if (mounted) {
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => const NavBarHandler()));
-          }
-        }
+    await _session.login();
+    if (serviceLocator<SharedPreferencesHelper>().isLoggedIn) {
+      await serviceLocator<RecipeIndexStore>().loadRecipeIndices();
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const NavBarHandler()));
       }
-    } catch (e) {
-      print(e);
     }
   }
 }

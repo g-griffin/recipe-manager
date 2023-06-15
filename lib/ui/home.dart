@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:recipe_manager/constants/strings.dart';
-import 'package:recipe_manager/data/network/constants/endpoints.dart';
-import 'package:recipe_manager/data/secure_storage.dart';
-import 'package:recipe_manager/data/secure_storage_manager.dart';
-import 'package:recipe_manager/data/sharedpref/shared_preferences_helper.dart';
+import 'package:recipe_manager/data/shared_pref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
 import 'package:recipe_manager/stores/recipe_index_store.dart';
+import 'package:recipe_manager/stores/session_store.dart';
 import 'package:recipe_manager/ui/login.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,9 +15,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _indexStore = serviceLocator<RecipeIndexStore>();
-
-  final appAuth = const FlutterAppAuth();
+  final RecipeIndexStore _indexStore = serviceLocator<RecipeIndexStore>();
+  final SessionStore _session = serviceLocator<SessionStore>();
 
   @override
   Future<void> didChangeDependencies() async {
@@ -98,20 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _logoutAction() async {
-    final idToken = await serviceLocator<SecureStorageManager>().getString(SecureStorage.idToken);
-    await appAuth.endSession(
-      EndSessionRequest(
-        idTokenHint: idToken,
-        postLogoutRedirectUrl: Endpoints.redirectUrl,
-        issuer: Endpoints.issuerUrl,
-        discoveryUrl: Endpoints.discoveryUrl,
-        allowInsecureConnections: true,
-      ),
-    );
-
-    await serviceLocator<SharedPreferencesHelper>().saveIsLoggedIn(false);
-    await serviceLocator<SecureStorageManager>().removeAll();
-
+    await _session.logout();
     if (mounted) {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const LoginScreen()));
