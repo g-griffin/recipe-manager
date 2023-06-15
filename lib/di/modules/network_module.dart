@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:recipe_manager/data/network/constants/endpoints.dart';
-import 'package:recipe_manager/data/sharedpref/shared_preferences_helper.dart';
+import 'package:recipe_manager/data/secure_storage.dart';
+import 'package:recipe_manager/data/secure_storage_manager.dart';
 
 abstract class NetworkModule {
   /// A singleton preference provider.
   ///
   /// Calling it multiple times will return the same instance.
-  static Dio provideDio(SharedPreferencesHelper sharedPreferencesHelper) {
+  static Dio provideDio(SecureStorageManager secureStorage) {
     final dio = Dio();
 
     dio
@@ -23,7 +24,7 @@ abstract class NetworkModule {
         QueuedInterceptorsWrapper(
           onRequest: (RequestOptions options,
               RequestInterceptorHandler requestHandler) async {
-            var token = await sharedPreferencesHelper.authToken;
+            var token = await secureStorage.getString(SecureStorage.authToken);
             if (token != null) {
               options.headers
                   .putIfAbsent('Authorization', () => 'Bearer $token');

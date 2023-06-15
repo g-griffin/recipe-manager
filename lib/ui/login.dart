@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:recipe_manager/constants/strings.dart';
+import 'package:recipe_manager/data/secure_storage.dart';
+import 'package:recipe_manager/data/secure_storage_manager.dart';
 import 'package:recipe_manager/data/network/constants/endpoints.dart';
 import 'package:recipe_manager/data/sharedpref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
@@ -87,9 +89,9 @@ class _LoginScreenState extends State<LoginScreen> {
       var authToken = result?.accessToken;
       var idToken = result?.idToken;
       if (result != null) {
-        await serviceLocator<SharedPreferencesHelper>()
-            .saveAuthToken(authToken!);
-        await serviceLocator<SharedPreferencesHelper>().saveIdToken(idToken!);
+        await serviceLocator<SecureStorageManager>().setString(SecureStorage.authToken, authToken!);
+        await serviceLocator<SecureStorageManager>().setString(SecureStorage.idToken, idToken!);
+
         await serviceLocator<SharedPreferencesHelper>().saveIsLoggedIn(true);
 
         if (serviceLocator<SharedPreferencesHelper>().isLoggedIn) {

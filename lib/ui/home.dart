@@ -3,6 +3,8 @@ import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:recipe_manager/constants/strings.dart';
 import 'package:recipe_manager/data/network/constants/endpoints.dart';
+import 'package:recipe_manager/data/secure_storage.dart';
+import 'package:recipe_manager/data/secure_storage_manager.dart';
 import 'package:recipe_manager/data/sharedpref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
 import 'package:recipe_manager/stores/recipe_index_store.dart';
@@ -96,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _logoutAction() async {
-    final idToken = await serviceLocator<SharedPreferencesHelper>().idToken;
+    final idToken = await serviceLocator<SecureStorageManager>().getString(SecureStorage.idToken);
     await appAuth.endSession(
       EndSessionRequest(
         idTokenHint: idToken,
@@ -108,8 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     await serviceLocator<SharedPreferencesHelper>().saveIsLoggedIn(false);
-    await serviceLocator<SharedPreferencesHelper>().removeAuthToken();
-    await serviceLocator<SharedPreferencesHelper>().removeIdToken();
+    await serviceLocator<SecureStorageManager>().removeAll();
 
     if (mounted) {
       Navigator.of(context).pushReplacement(
