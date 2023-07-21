@@ -89,7 +89,6 @@ abstract class _SessionStore with Store {
       }
     } catch (e) {
       print('FAILED TO REFRESH TOKENS: $e');
-      // TODO: handle expired refresh token
     }
     return null;
   }

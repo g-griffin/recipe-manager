@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:recipe_manager/data/network/constants/endpoints.dart';
 import 'package:recipe_manager/data/secure_storage/secure_storage.dart';
 import 'package:recipe_manager/stores/session_store.dart';
+import 'package:recipe_manager/utils/dialogs.dart';
 
 abstract class NetworkModule {
   static Dio provideDio(SessionStore session) {
@@ -31,9 +32,9 @@ class DioInterceptors extends QueuedInterceptorsWrapper {
   @override
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    var token = await _session.secureStorage.getString(SecureStorage.authToken);
-    if (!_session.tokenHasExpired(token)) {
-      options.headers.putIfAbsent('Authorization', () => 'Bearer $token');
+    var authToken = await _session.secureStorage.getString(SecureStorage.authToken);
+    if (!_session.tokenHasExpired(authToken)) {
+      options.headers.putIfAbsent('Authorization', () => 'Bearer $authToken');
     }
     return handler.next(options);
   }
@@ -41,10 +42,17 @@ class DioInterceptors extends QueuedInterceptorsWrapper {
   @override
   Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
-      var newToken = await _session.refresh();
-      if (!_session.tokenHasExpired(newToken)) {
-        err.requestOptions.headers['Authorization'] = 'Bearer $newToken';
-        return handler.resolve(await _dio.fetch(err.requestOptions));
+      var refreshToken =
+          await _session.secureStorage.getString(SecureStorage.refreshToken);
+
+      if (!_session.tokenHasExpired(refreshToken)) {
+        var authToken = await _session.refresh();
+        if (!_session.tokenHasExpired(authToken)) {
+          err.requestOptions.headers['Authorization'] = 'Bearer $authToken';
+          return handler.resolve(await _dio.fetch(err.requestOptions));
+        }
+      } else {
+        await expiredSessionDialog();
       }
     }
     return handler.next(err);
