@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:recipe_manager/constants/strings.dart';
 import 'package:recipe_manager/data/shared_pref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
 import 'package:recipe_manager/stores/recipe_index_store.dart';
@@ -30,60 +29,36 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title:
             Text('Hello ${serviceLocator<SharedPreferencesHelper>().username}'),
-      ),
-      body: Column(
-        children: <Widget>[
-          const SizedBox(height: 50),
-          _buildLogoutButton(),
-          const SizedBox(height: 50),
-          _buildReloadButton(),
-          Flexible(fit: FlexFit.loose, child: _buildIndexList()),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                _logoutAction();
+              },
+              child: const Icon(Icons.power_settings_new, size: 26.0),
+            ),
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _buildLogoutButton() {
-    return Container(
-      height: 50,
-      width: 250,
-      decoration: BoxDecoration(
-          color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-      child: TextButton(
-        onPressed: () {
-          _logoutAction();
+      body: RefreshIndicator(
+        color: Colors.white,
+        backgroundColor: Colors.blue,
+        strokeWidth: 4.0,
+        triggerMode: RefreshIndicatorTriggerMode.onEdge,
+        onRefresh: () async {
+          await Future<void>.delayed(const Duration(seconds: 1));
+          await serviceLocator<RecipeIndexStore>().loadRecipeIndices();
         },
-        child: const Text(
-          Strings.logoutButtonText,
-          style: TextStyle(color: Colors.white, fontSize: 25),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildReloadButton() {
-    return Container(
-      height: 50,
-      width: 250,
-      decoration: BoxDecoration(
-          color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-      child: TextButton(
-        onPressed: () {
-          serviceLocator<RecipeIndexStore>().loadRecipeIndices();
-        },
-        child: const Text(
-          'Reload Recipes',
-          style: TextStyle(color: Colors.white, fontSize: 25),
-        ),
+        child: _buildIndexList(),
       ),
     );
   }
 
   Widget _buildIndexList() {
     if (_indexStore.recipeIndices.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 50.0),
-        child: Center(
+      return const Center(
+        child: SingleChildScrollView(
           child: Text(
             'No recipes were found.\n\nTap \'Scan\' to add some now.',
             textAlign: TextAlign.center,
@@ -94,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return Observer(
         builder: (_) => ListView.builder(
           scrollDirection: Axis.vertical,
+          physics: const AlwaysScrollableScrollPhysics(),
           itemCount: _indexStore.recipeIndices.length,
           itemBuilder: (context, index) {
             return Padding(
