@@ -47,8 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         strokeWidth: 4.0,
         triggerMode: RefreshIndicatorTriggerMode.onEdge,
         onRefresh: () async {
-          await Future<void>.delayed(const Duration(seconds: 1));
-          await serviceLocator<RecipeIndexStore>().loadRecipeIndices();
+          await _indexStore.loadRecipeIndices();
         },
         child: _buildIndexList(),
       ),
@@ -57,11 +56,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildIndexList() {
     if (_indexStore.recipeIndices.isEmpty) {
-      return const Center(
-        child: SingleChildScrollView(
-          child: Text(
-            'No recipes were found.\n\nTap \'Scan\' to add some now.',
-            textAlign: TextAlign.center,
+      return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height -
+              kToolbarHeight -  // AppBar height
+              kBottomNavigationBarHeight, // NavBar height
+          child: const Center(
+            child: Text(
+              'No recipes were found.\n\nTap \'Scan\' to add some now.',
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
       );
