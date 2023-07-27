@@ -53,6 +53,7 @@ class DioInterceptors extends QueuedInterceptorsWrapper {
         }
       } else {
         await expiredSessionDialog();
+        return handler.reject(err);
       }
     }
     return handler.next(err);

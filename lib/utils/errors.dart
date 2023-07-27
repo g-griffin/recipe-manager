@@ -6,5 +6,5 @@ void logError(String code, String? message) {
 
 void showInSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context)
-      .showSnackBar(SnackBar(content: Text(message)));
+      .showSnackBar(SnackBar(content: Text(message, textAlign: TextAlign.center,)));
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:recipe_manager/constants/strings.dart';
 import 'package:recipe_manager/data/shared_pref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
 import 'package:recipe_manager/stores/recipe_index_store.dart';
@@ -27,8 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text('Hello ${serviceLocator<SharedPreferencesHelper>().username}'),
+        title: Text(Strings.appBarTitle(
+            serviceLocator<SharedPreferencesHelper>().username)),
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
@@ -60,13 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         child: SizedBox(
           height: MediaQuery.of(context).size.height -
-              kToolbarHeight -  // AppBar height
+              kToolbarHeight - // AppBar height
               kBottomNavigationBarHeight, // NavBar height
           child: const Center(
-            child: Text(
-              'No recipes were found.\n\nTap \'Scan\' to add some now.',
-              textAlign: TextAlign.center,
-            ),
+            child: Text(Strings.emptyRecipeIndex, textAlign: TextAlign.center),
           ),
         ),
       );

@@ -6,6 +6,7 @@ import 'package:recipe_manager/data/secure_storage/secure_storage.dart';
 import 'package:recipe_manager/data/secure_storage/secure_storage_manager.dart';
 import 'package:recipe_manager/data/shared_pref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
+import 'package:recipe_manager/utils/errors.dart';
 
 part 'session_store.g.dart';
 
@@ -39,7 +40,7 @@ abstract class _SessionStore with Store {
         await serviceLocator<SharedPreferencesHelper>().setIsLoggedIn(true);
       }
     } catch (e) {
-      print('LOGIN FAILED: $e');
+      logError(e.toString(), 'Authorization failed');
     }
   }
 
@@ -64,7 +65,7 @@ abstract class _SessionStore with Store {
         ),
       );
     } catch (e) {
-      print('LOGOUT FAIlED: $e');
+      logError(e.toString(), 'Failed to end session');
     }
     await _secureStorage.removeAll();
     await serviceLocator<SharedPreferencesHelper>().setIsLoggedIn(false);
@@ -88,7 +89,7 @@ abstract class _SessionStore with Store {
         return response.accessToken;
       }
     } catch (e) {
-      print('FAILED TO REFRESH TOKENS: $e');
+      logError(e.toString(), 'Failed to refresh tokens');
     }
     return null;
   }

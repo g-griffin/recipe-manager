@@ -7,7 +7,7 @@ class SharedPreferencesHelper {
 
   SharedPreferencesHelper(this._sharedPreferences);
 
-  String? get username {
+  String get username {
     return _sharedPreferences.getString(Preferences.username) ?? 'User';
   }
 

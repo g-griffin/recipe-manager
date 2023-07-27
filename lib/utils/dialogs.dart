@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_manager/constants/strings.dart';
 import 'package:recipe_manager/di/service_locator.dart';
 import 'package:recipe_manager/stores/session_store.dart';
 import 'package:recipe_manager/ui/login.dart';
@@ -10,7 +11,7 @@ Future<void> expiredSessionDialog() async {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Session Expired', textAlign: TextAlign.center),
+          title: const Text(Strings.expiredSessionDialogTitle, textAlign: TextAlign.center),
           titleTextStyle: const TextStyle(
               fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
           actionsOverflowButtonSpacing: 20,
@@ -23,10 +24,10 @@ Future<void> expiredSessionDialog() async {
                         builder: (context) => const LoginScreen()));
                   }
                 },
-                child: const Text('Ok')),
+                child: const Text(Strings.okButton)),
           ],
           content:
-              const Text('Please log in again.', textAlign: TextAlign.center),
+              const Text(Strings.expiredSessionDialogContent, textAlign: TextAlign.center),
         );
       });
 }
