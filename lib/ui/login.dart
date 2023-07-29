@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:recipe_manager/constants/strings.dart';
 import 'package:recipe_manager/data/shared_pref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
-import 'package:recipe_manager/stores/recipe_index_store.dart';
 import 'package:recipe_manager/stores/session_store.dart';
 import 'package:recipe_manager/utils/nav_bar_handler.dart';
 
@@ -74,7 +73,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _loginAction() async {
     await _session.login();
     if (serviceLocator<SharedPreferencesHelper>().isLoggedIn) {
-      await serviceLocator<RecipeIndexStore>().loadRecipeIndices();
       if (mounted) {
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const NavBarHandler()));

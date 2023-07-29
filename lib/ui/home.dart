@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
-    await _indexStore.loadRecipeIndices();
+    await _indexStore.loadRecipeIndices();  // Called after successful login
   }
 
   @override
