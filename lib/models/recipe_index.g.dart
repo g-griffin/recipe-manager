@@ -1,17 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'index.dart';
+part of 'recipe_index.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Index _$IndexFromJson(Map<String, dynamic> json) => Index(
+RecipeIndex _$RecipeIndexFromJson(Map<String, dynamic> json) => RecipeIndex(
       id: json['id'] as int?,
-      indexText: json['indexText'] as String,
+      recipeIndexText: json['recipeIndexText'] as String,
     );
 
-Map<String, dynamic> _$IndexToJson(Index instance) {
+Map<String, dynamic> _$RecipeIndexToJson(RecipeIndex instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
@@ -21,6 +21,6 @@ Map<String, dynamic> _$IndexToJson(Index instance) {
   }
 
   writeNotNull('id', instance.id);
-  val['indexText'] = instance.indexText;
+  val['recipeIndexText'] = instance.recipeIndexText;
   return val;
 }

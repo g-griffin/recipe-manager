@@ -7,17 +7,15 @@ class SharedPreferencesHelper {
 
   SharedPreferencesHelper(this._sharedPreferences);
 
-  // Theme:------------------------------------------------------
-
-  String? get username {
-    return _sharedPreferences.getString(Preferences.username);
+  String get username {
+    return _sharedPreferences.getString(Preferences.username) ?? 'User';
   }
 
   Future<bool> saveUsername(String value) async {
     return _sharedPreferences.setString(Preferences.username, value);
   }
 
-  Future<bool> saveIsLoggedIn(bool value) async {
+  Future<bool> setIsLoggedIn(bool value) async {
     return _sharedPreferences.setBool(Preferences.isLoggedIn, value);
   }
 
