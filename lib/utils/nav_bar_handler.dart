@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:recipe_manager/ui/home.dart';
+import 'package:recipe_manager/ui/profile.dart';
 import 'package:recipe_manager/ui/scan/scan.dart';
 import 'package:recipe_manager/ui/search.dart';
 
@@ -18,6 +19,7 @@ class _NavBarHandlerState extends State<NavBarHandler> {
     HomeScreen(),
     ScanScreen(),
     SearchScreen(),
+    ProfileScreen()
   ];
 
   @override
@@ -32,9 +34,7 @@ class _NavBarHandlerState extends State<NavBarHandler> {
           secondaryAnimation: secondaryAnimation,
           child: child,
         ),
-        child: IndexedStack(
-            index: _selectedIndex,
-            children: _screens),
+        child: IndexedStack(index: _selectedIndex, children: _screens),
       ),
       bottomNavigationBar: _bottomNavigation(),
     );
@@ -43,6 +43,7 @@ class _NavBarHandlerState extends State<NavBarHandler> {
   BottomNavigationBar _bottomNavigation() {
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
+      useLegacyColorScheme: false,
       onTap: _onIconTapped,
       items: const [
         BottomNavigationBarItem(
@@ -57,6 +58,10 @@ class _NavBarHandlerState extends State<NavBarHandler> {
           icon: Icon(Icons.search),
           label: "Search",
         ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: "Profile",
+        )
       ],
     );
   }

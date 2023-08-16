@@ -4,9 +4,11 @@ class Strings {
   static const String appName = 'Recipe Manager Project';
   static const String home = 'Home Page';
   static const String login = 'Login Page';
+  static const String profile = 'Profile';
 
   //Images
   static const String loginPageLogoPath = 'images/flutter_logo.png';
+  static const String defaultAvatarPath = 'images/default_avatar.png';
 
   //Login
   static const String usernameFieldText = 'Username';
