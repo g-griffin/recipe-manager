@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:recipe_manager/constants/strings.dart';
-import 'package:recipe_manager/data/shared_pref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
 import 'package:recipe_manager/stores/recipe_index_store.dart';
 import 'package:recipe_manager/stores/session_store.dart';
@@ -29,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(Strings.appBarTitle(
-            serviceLocator<SharedPreferencesHelper>().username)),
+            _session.firstName ?? Strings.defaultFirstName)),
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.only(right: 20.0),

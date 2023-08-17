@@ -26,6 +26,11 @@ class Strings {
   static const String emptyRecipeIndex =
       'No recipes were found.\n\nTap \'Scan\' to add some now.';
 
+  // Shared preferences
+  static const String defaultFirstName = 'First';
+  static const String defaultLastName = 'Last';
+  static const String defaultEmail = 'firstLast@email.de';
+
   //Dio client
   static const String getErrorLogMessage = 'Unable to get recipes';
   static const String getErrorUserMessage =

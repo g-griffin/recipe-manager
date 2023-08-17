@@ -1,18 +1,33 @@
+import 'package:recipe_manager/constants/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'constants/preferences.dart';
 
 class SharedPreferencesHelper {
+
+
   final SharedPreferences _sharedPreferences;
 
   SharedPreferencesHelper(this._sharedPreferences);
 
-  String get username {
-    return _sharedPreferences.getString(Preferences.username) ?? 'User';
+  String? get firstName {
+    return _sharedPreferences.getString(Preferences.firstName);
   }
 
-  Future<bool> saveUsername(String value) async {
-    return _sharedPreferences.setString(Preferences.username, value);
+  String? get lastName {
+    return _sharedPreferences.getString(Preferences.lastName);
+  }
+
+  String? get email {
+    return _sharedPreferences.getString(Preferences.email);
+  }
+
+  Future<bool> saveString(String key, String value) async {
+    return _sharedPreferences.setString(key, value);
+  }
+
+  Future<bool> logout() async {
+    return _sharedPreferences.clear();
   }
 
   Future<bool> setIsLoggedIn(bool value) async {

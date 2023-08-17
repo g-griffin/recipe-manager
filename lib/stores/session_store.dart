@@ -4,6 +4,7 @@ import 'package:mobx/mobx.dart';
 import 'package:recipe_manager/data/network/constants/endpoints.dart';
 import 'package:recipe_manager/data/secure_storage/secure_storage.dart';
 import 'package:recipe_manager/data/secure_storage/secure_storage_manager.dart';
+import 'package:recipe_manager/data/shared_pref/constants/preferences.dart';
 import 'package:recipe_manager/data/shared_pref/shared_preferences_helper.dart';
 import 'package:recipe_manager/di/service_locator.dart';
 import 'package:recipe_manager/utils/errors.dart';
@@ -15,10 +16,25 @@ class SessionStore = _SessionStore with _$SessionStore;
 abstract class _SessionStore with Store {
   final FlutterAppAuth _appAuth;
   final SecureStorageManager _secureStorage;
+  final SharedPreferencesHelper _sharedPrefs;
 
-  _SessionStore(this._appAuth, this._secureStorage);
+  _SessionStore(this._appAuth, this._secureStorage, this._sharedPrefs);
 
-  @action
+  @readonly
+  String? firstName;
+
+  @readonly
+  String? lastName;
+
+  @readonly
+  String? email;
+
+  void initializeSessionObservables() {
+    firstName = _sharedPrefs.firstName;
+    lastName = _sharedPrefs.lastName;
+    email = _sharedPrefs.email;
+  }
+
   SecureStorageManager get secureStorage => _secureStorage;
 
   Future<void> login() async {
@@ -36,11 +52,24 @@ abstract class _SessionStore with Store {
       );
 
       if (response != null) {
+        await _saveProfileDetails(response.idToken);
+        initializeSessionObservables();
         await _saveTokens(response);
         await serviceLocator<SharedPreferencesHelper>().setIsLoggedIn(true);
       }
     } catch (e) {
       logError(e.toString(), 'Authorization failed');
+    }
+  }
+
+  Future<void> _saveProfileDetails(String? idToken) async {
+    if (idToken != null) {
+      await _sharedPrefs.saveString(
+          Preferences.firstName, JwtDecoder.decode(idToken)['given_name']);
+      await _sharedPrefs.saveString(
+          Preferences.lastName, JwtDecoder.decode(idToken)['family_name']);
+      await _sharedPrefs.saveString(
+          Preferences.email, JwtDecoder.decode(idToken)['email']);
     }
   }
 
@@ -68,7 +97,7 @@ abstract class _SessionStore with Store {
       logError(e.toString(), 'Failed to end session');
     }
     await _secureStorage.removeAll();
-    await serviceLocator<SharedPreferencesHelper>().setIsLoggedIn(false);
+    await _sharedPrefs.logout();
   }
 
   Future<String?> refresh() async {

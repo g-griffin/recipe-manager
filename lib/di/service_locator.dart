@@ -29,7 +29,7 @@ Future<void> setupServiceLocator() async {
   serviceLocator.registerSingleton<FlutterAppAuth>(const FlutterAppAuth());
   serviceLocator.registerSingleton<SessionStore>(SessionStore(
       serviceLocator<FlutterAppAuth>(),
-      serviceLocator<SecureStorageManager>()));
+      serviceLocator<SecureStorageManager>(), serviceLocator<SharedPreferencesHelper>()));
   serviceLocator.registerSingleton<Dio>(
       NetworkModule.provideDio(serviceLocator<SessionStore>()));
   serviceLocator.registerSingleton<DioClient>(DioClient(serviceLocator<Dio>()));
